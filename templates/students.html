@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student List - Acadeno Technologies</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f4f8;
+            color: #1a202c;
+            min-height: 100vh;
+        }
+
+        /* Top Bar */
+        .topbar {
+            background: linear-gradient(135deg, #0170B8 0%, #014f82 100%);
+            color: white;
+            padding: 18px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 12px rgba(1, 112, 184, 0.3);
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .topbar-logo {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .topbar-sub {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .topbar-right a {
+            color: white;
+            text-decoration: none;
+            background: rgba(255,255,255,0.18);
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .topbar-right a:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Main Content */
+        .main {
+            max-width: 1300px;
+            margin: 32px auto;
+            padding: 0 24px;
+        }
+
+        /* Stats Cards */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 14px;
+            padding: 20px 24px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+            border-left: 4px solid;
+        }
+
+        .stat-card.blue  { border-color: #0170B8; }
+        .stat-card.green { border-color: #22c55e; }
+        .stat-card.amber { border-color: #f59e0b; }
+        .stat-card.red   { border-color: #ef4444; }
+
+        .stat-label {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        /* Search & Filter */
+        .toolbar {
+            background: white;
+            border-radius: 14px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+        }
+
+        .search-box {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 16px 10px 40px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 9px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            color: #1a202c;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: #0170B8;
+        }
+
+        .search-box::before {
+            content: "🔍";
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+        }
+
+        .filter-select {
+            padding: 10px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 9px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            color: #1a202c;
+            background: white;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .filter-select:focus {
+            border-color: #0170B8;
+        }
+
+        /* Table */
+        .table-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 1px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .table-header h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .count-badge {
+            background: #e0f0fd;
+            color: #0170B8;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            background: #f8fafc;
+            padding: 12px 16px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.15s;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        td {
+            padding: 14px 16px;
+            font-size: 13.5px;
+            color: #374151;
+            vertical-align: middle;
+        }
+
+        .student-name {
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .student-email {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-completed {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .badge-partial {
+            background: #fef9c3;
+            color: #ca8a04;
+        }
+
+        .badge-pending {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .amount {
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .balance-positive {
+            color: #dc2626;
+        }
+
+        .balance-zero {
+            color: #16a34a;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a3b8;
+        }
+
+        .no-data-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .no-data-text {
+            font-size: 15px;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+
+            .main {
+                padding: 0 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="topbar">
+        <div class="topbar-left">
+            <div>
+                <div class="topbar-logo">Acadeno Technologies</div>
+                <div class="topbar-sub">Student Management</div>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <a href="/">← Back to Home</a>
+        </div>
+    </div>
+
+    <div class="main">
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-card blue">
+                <div class="stat-label">Total Students</div>
+                <div class="stat-value">{{ students | length }}</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-label">Fully Paid</div>
+                <div class="stat-value">{{ students | selectattr('status', 'equalto', 'Completed') | list | length }}</div>
+            </div>
+            <div class="stat-card amber">
+                <div class="stat-label">Partial Payment</div>
+                <div class="stat-value">{{ students | selectattr('status', 'equalto', 'Partial') | list | length }}</div>
+            </div>
+            <div class="stat-card red">
+                <div class="stat-label">No Payment</div>
+                <div class="stat-value">{{ students | selectattr('status', 'equalto', 'Pending') | list | length }}</div>
+            </div>
+        </div>
+
+        <!-- Search & Filter Toolbar -->
+        <div class="toolbar">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search by name, email, phone or course..." oninput="filterTable()">
+            </div>
+            <select class="filter-select" id="statusFilter" onchange="filterTable()">
+                <option value="">All Status</option>
+                <option value="Completed">Completed</option>
+                <option value="Partial">Partial</option>
+                <option value="Pending">Pending</option>
+            </select>
+        </div>
+
+        <!-- Table -->
+        <div class="table-card">
+            <div class="table-header">
+                <h2>Enrolled Students</h2>
+                <span class="count-badge" id="countBadge">{{ students | length }} students</span>
+            </div>
+            <table id="studentsTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Student</th>
+                        <th>Phone</th>
+                        <th>Course</th>
+                        <th>Duration</th>
+                        <th>Joining Date</th>
+                        <th>Total Fee</th>
+                        <th>Paid</th>
+                        <th>Balance</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    {% if students %}
+                        {% for s in students %}
+                        <tr class="data-row"
+                            data-name="{{ s.name | lower }}"
+                            data-email="{{ s.email | lower }}"
+                            data-phone="{{ s.phone }}"
+                            data-course="{{ s.course | lower }}"
+                            data-status="{{ s.status }}">
+                            <td style="color:#94a3b8; font-size:12px;">{{ loop.index }}</td>
+                            <td>
+                                <div class="student-name">{{ s.salutation or '' }} {{ s.name }}</div>
+                                <div class="student-email">{{ s.email }}</div>
+                            </td>
+                            <td>{{ s.phone }}</td>
+                            <td>{{ s.course }}</td>
+                            <td>{{ s.duration or '—' }}</td>
+                            <td>{{ s.joining_date or '—' }}</td>
+                            <td class="amount">
+                                {% if s.fee %}
+                                    ₹{{ "{:,.0f}".format(s.fee - (s.discount or 0)) }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td class="amount" style="color:#16a34a;">
+                                ₹{{ "{:,.0f}".format(s.total_paid) }}
+                            </td>
+                            <td class="amount {% if s.balance > 0 %}balance-positive{% else %}balance-zero{% endif %}">
+                                {% if s.balance > 0 %}
+                                    ₹{{ "{:,.0f}".format(s.balance) }}
+                                {% else %}
+                                    ✓ Nil
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge
+                                    {% if s.status == 'Completed' %}badge-completed
+                                    {% elif s.status == 'Partial' %}badge-partial
+                                    {% else %}badge-pending{% endif %}">
+                                    {{ s.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="10">
+                                <div class="no-data">
+                                    <div class="no-data-icon">🎓</div>
+                                    <div class="no-data-text">No students found in the database.</div>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script>
+        function filterTable() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const status = document.getElementById('statusFilter').value;
+            const rows = document.querySelectorAll('.data-row');
+            let visible = 0;
+
+            rows.forEach(row => {
+                const name   = row.dataset.name   || '';
+                const email  = row.dataset.email  || '';
+                const phone  = row.dataset.phone  || '';
+                const course = row.dataset.course || '';
+                const rowStatus = row.dataset.status || '';
+
+                const matchSearch = !search ||
+                    name.includes(search) ||
+                    email.includes(search) ||
+                    phone.includes(search) ||
+                    course.includes(search);
+
+                const matchStatus = !status || rowStatus === status;
+
+                if (matchSearch && matchStatus) {
+                    row.style.display = '';
+                    visible++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            document.getElementById('countBadge').textContent = visible + ' student' + (visible !== 1 ? 's' : '');
+        }
+    </script>
+
+</body>
+
+</html>

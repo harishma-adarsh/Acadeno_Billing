@@ -1,0 +1,5 @@
+Flask
+num2words
+gunicorn
+psycopg2-binary
+python-dotenv
